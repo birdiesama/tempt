@@ -1,0 +1,50 @@
+import pymel.core as pm
+
+selection_list = pm.ls(sl = True)
+
+driver = selection_list[0]
+driven_list = selection_list[1:]
+
+attr_list = [
+    'motionDrag',
+    'damp',
+    ]
+
+for driven in driven_list:
+    for attr in attr_list:
+        try:
+            exec("driver.{0} >> driven.{0}".format(attr))
+        except:
+            pass
+            
+#######################################
+
+import pymel.core as pm
+
+attr = 'jiggle'
+mul = 1.3
+
+selection_list = pm.ls(sl = True)
+for selection in selection_list:
+    exec('attr_val = selection.{0}.get() * mul'.format(attr))
+    exec('selection.{0}.set(attr_val)'.format(attr))
+
+#######################################
+
+import pymel.core as pm
+
+#youngsModulus
+#massDensity
+attr = 'youngsModulus'
+mult = 1.3
+
+selection_list = pm.ls(sl = True)
+for selection in selection_list:
+    try:
+        zMat = pm.PyNode(selection.nodeName() + '_zMaterial_0')
+        exec("zMat.{0}.set(zMat.{0}.get() * mult)".format(attr))
+    except:
+        print selection
+
+#chrGodzilla01A_zivaMuscleA_2574_0:SIM_mesh_m_high_tail_001
+#chrGodzilla01A_zivaMuscleA_2574_0:SIM_mesh_m_high_tail_001_zMaterial_0
