@@ -1,0 +1,35 @@
+import pymel.core as pm
+
+selection_list = pm.ls(sl = True)
+
+for selection in selection_list:
+    
+    shape_list = selection.getShapes()
+    for shape_prx in shape_list:
+        if not shape_prx.isIntermediate():
+            shape = shape_prx
+
+    first_node = []
+    else_node = []
+    blendshape_node = []
+
+    for history in shape.listHistory(pruneDagObjects = True, interestLevel = 1):
+        if str(history.type()) == 'blendShape':
+            blendshape_node.append(history)
+        elif str(history.type()) == 'tweak':
+            first_node.append(history)
+        else:
+            else_node.append(history)
+    
+    final_list = []
+    final_list.extend(first_node)
+    final_list.extend(blendshape_node)
+    final_list.extend(else_node)
+
+    
+    cmd = 'pm.reorderDeformers('
+    for item in final_list:
+        cmd += '"{0}",'.format(item.nodeName())
+    cmd += '"{0}")'.format(shape.nodeName())
+    
+    exec(cmd)
